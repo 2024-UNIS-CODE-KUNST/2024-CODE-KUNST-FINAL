@@ -49,15 +49,17 @@ public class SecurityConfig {
                 .formLogin(
                         formLogin ->
                                 formLogin
+                                        .loginPage("/login")
                                         .defaultSuccessUrl("/")
-                                        .failureUrl("/login")
+                                        .failureUrl("/failure")
                                         .usernameParameter("userId")
                                         .passwordParameter("pwd")
-                                        .loginProcessingUrl("/login_proc") // login 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
+                                        .loginProcessingUrl("/login") // login 주소가 호출되면 시큐리티가 낚아채서 대신 로그인 진행
                                         .successHandler(new AuthenticationSuccessHandler() {
                                             @Override
                                             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
                                                 System.out.println("authentication: " + authentication.getName());
+                                                request.getSession().setAttribute("userId", authentication.getName());
                                                 response.sendRedirect("/");
                                             }
                                         })
@@ -65,7 +67,8 @@ public class SecurityConfig {
                                             @Override
                                             public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
                                                 System.out.println("exception" + exception.getMessage());
-                                                response.sendRedirect("/loginPage");
+                                                request.getSession().setAttribute("exception", exception.getMessage());
+                                                response.sendRedirect("/failure");
                                             }
                                         })
                                         .permitAll() // loginForm으로는 인증받지 않아도 접근 가능하도록
@@ -122,6 +125,7 @@ public class SecurityConfig {
                 );
         // 기타
         http
+                .csrf(csrf -> csrf.disable())
                 .httpBasic(withDefaults());
 
 
