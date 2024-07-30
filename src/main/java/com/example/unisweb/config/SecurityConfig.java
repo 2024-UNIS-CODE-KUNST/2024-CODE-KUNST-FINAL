@@ -84,19 +84,12 @@ public class SecurityConfig {
                         logoutConfig ->
                                 logoutConfig
                                         .logoutUrl("/logout") // 로그아웃 Url
-                                        .logoutSuccessUrl("/basic") // 로그아웃 성공 시 리다이렉트 페이지
                                         .deleteCookies("remember-me") // 쿠키 삭제
                                         .addLogoutHandler(new LogoutHandler() { // 로그아웃 핸들러: 세션 무효화 + 쿠키 삭제 외의 별도로 처리하고 싶을 경우
                                             @Override
                                             public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
                                                 HttpSession session = request.getSession();
                                                 if (session != null) session.invalidate(); // 세션 무효화
-                                            }
-                                        })
-                                        .logoutSuccessHandler(new LogoutSuccessHandler() { // 로그아웃 성공 핸들러: 별도로 처리하고 싶을 경우
-                                            @Override
-                                            public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                                                response.sendRedirect("/basic"); // basic 페이지로 리다이렉트
                                             }
                                         })
                 );
