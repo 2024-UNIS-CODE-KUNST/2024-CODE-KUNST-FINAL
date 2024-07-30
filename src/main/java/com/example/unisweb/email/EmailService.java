@@ -16,10 +16,15 @@ public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
-    public EmailEntity saveEmail(String email) {
+    public EmailOkDto saveEmail(String email) {
         EmailEntity emailEntity = new EmailEntity();
         emailEntity.setEmail(email);
-        return emailRepository.save(emailEntity);
+        EmailEntity savedEmail = emailRepository.save(emailEntity);
+        return new EmailOkDto(savedEmail.getId(), savedEmail.getEmail());
+    }
+
+    public EmailFailDto saveEmailFail(String errorMessage) {
+        return new EmailFailDto(errorMessage);
     }
 
     public void sendEmails(String subject, String message) {
