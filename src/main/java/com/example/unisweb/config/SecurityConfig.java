@@ -47,6 +47,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/emails/email").permitAll() // 인증 없이 접근 가능
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/basic").permitAll()
+                        .requestMatchers("/healthcheck").permitAll()
                         .anyRequest().authenticated()
                 );
         // 2. 로그인 설정
