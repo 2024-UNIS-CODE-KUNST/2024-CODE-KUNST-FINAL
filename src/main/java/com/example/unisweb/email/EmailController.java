@@ -24,12 +24,6 @@ public class EmailController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(failDto);
         }
     }
-
-    @GetMapping("/email/failure")
-    public ResponseEntity<EmailFailDto> saveEmailFail(@RequestParam String errorMessage) {
-        EmailFailDto emailFailDto = emailService.saveEmailFail(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(emailFailDto);
-    }
     
     @PostMapping("/send")
     public ResponseEntity<String> sendEmails(@RequestBody EmailSendRequestDto emailSendRequestDto) {
