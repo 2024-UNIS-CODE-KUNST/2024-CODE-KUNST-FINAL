@@ -12,6 +12,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/basic")
+    public String basicPage() {
+        return "basic";
+    }
+
     @GetMapping("/")
     public ResponseEntity<?> loginSucesss(HttpServletRequest request) {
         LoginSuccessDto loginSuccessDto = userService.loginSuccess(request);

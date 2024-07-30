@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,6 +43,10 @@ public class SecurityConfig {
         // 1. 기본 설정
         http
                 .authorizeHttpRequests((auths) -> auths
+                        .requestMatchers("/api/emails/send").authenticated() // 인증 필요
+                        .requestMatchers("/api/emails/email").permitAll() // 인증 없이 접근 가능
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/basic").permitAll()
                         .anyRequest().authenticated()
                 );
         // 2. 로그인 설정
@@ -79,19 +84,19 @@ public class SecurityConfig {
                         logoutConfig ->
                                 logoutConfig
                                         .logoutUrl("/logout") // 로그아웃 Url
-                                        .logoutSuccessUrl("/login") // 로그아웃 성공 시 리다이렉트 페이지
+                                        .logoutSuccessUrl("/basic") // 로그아웃 성공 시 리다이렉트 페이지
                                         .deleteCookies("remember-me") // 쿠키 삭제
                                         .addLogoutHandler(new LogoutHandler() { // 로그아웃 핸들러: 세션 무효화 + 쿠키 삭제 외의 별도로 처리하고 싶을 경우
                                             @Override
                                             public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
                                                 HttpSession session = request.getSession();
-                                                session.invalidate(); // 세션 무효화
+                                                if (session != null) session.invalidate(); // 세션 무효화
                                             }
                                         })
                                         .logoutSuccessHandler(new LogoutSuccessHandler() { // 로그아웃 성공 핸들러: 별도로 처리하고 싶을 경우
                                             @Override
                                             public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                                                response.sendRedirect("/login"); // 로그인 페이지로 리다이렉트
+                                                response.sendRedirect("/basic"); // basic 페이지로 리다이렉트
                                             }
                                         })
                 );

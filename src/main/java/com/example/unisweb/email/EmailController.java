@@ -15,9 +15,9 @@ public class EmailController {
     }
 
     @PostMapping("/email")
-    public ResponseEntity<?> saveEmail(@RequestParam String email) {
+    public ResponseEntity<?> saveEmail(@RequestBody EmailRequestDto emailRequestDto) {
         try {
-            EmailOkDto emailDto = emailService.saveEmail(email);
+            EmailOkDto emailDto = emailService.saveEmail(emailRequestDto.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(emailDto);
         } catch (Exception e) {
             EmailFailDto failDto = emailService.saveEmailFail(e.getMessage());
@@ -32,8 +32,8 @@ public class EmailController {
     }
     
     @PostMapping("/send")
-    public ResponseEntity<String> sendEmails(@RequestParam String subject, @RequestParam String message) {
-        emailService.sendEmails(subject, message);
+    public ResponseEntity<String> sendEmails(@RequestBody EmailSendRequestDto emailSendRequestDto) {
+        emailService.sendEmails(emailSendRequestDto.getSubject(), emailSendRequestDto.getMessage());
         return ResponseEntity.status(HttpStatus.OK).body("모집 이메일을 성공적으로 발송했습니다");
     }
 }
